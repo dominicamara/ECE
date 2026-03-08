@@ -5,11 +5,12 @@ module:
   mlp_features: [384]
   lstm_hidden_size: 512
   lstm_num_layers: 4
-  lstm_dropout: 0.1
+  lstm_dropout: 0.15
 
 datamodule:
   _target_: emg2qwerty.lightning.WindowedEMGDataModule
   window_length: 8000
   padding: [1800, 200]
+
 
 
