@@ -3,6 +3,10 @@ to_tensor:
   _target_: emg2qwerty.transforms.ToTensor
   fields: [emg_left, emg_right]
 
+channel_subset_8ch:
+  _target_: emg2qwerty.transforms.ChannelSubset
+  indices: [0, 2, 4, 6, 8, 10, 12, 14]  # sequential version
+  
 band_rotation:
   _target_: emg2qwerty.transforms.ForEach  # i.i.d rotation offset for each band
   transform:
