@@ -41,7 +41,17 @@ class ToTensor:
             [torch.as_tensor(data[f]) for f in self.fields], dim=self.stack_dim
         )
 
+@dataclass
+class ChannelSubset:
+    """Subsets the electrode channel dimension to the given indices.
+    Input tensor is expected to have shape (T, bands, channels) with channels last.
+    """
 
+    indices: Sequence[int]
+
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
+        return tensor[..., self.indices]
+        
 @dataclass
 class Lambda:
     """Applies a custom lambda function as a transform.
