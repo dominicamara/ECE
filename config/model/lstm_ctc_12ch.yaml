@@ -1,0 +1,14 @@
+# @package _global_
+# LSTM for 12-channel input; use with transforms=log_spectrogram_12ch_alternate
+module:
+  _target_: emg2qwerty.lightning.LSTMCTCModule_12ch
+  in_features: 396   # 33 freq * 12 channels
+  mlp_features: [384]
+  lstm_hidden_size: 256
+  lstm_num_layers: 2
+  lstm_dropout: 0.10
+
+datamodule:
+  _target_: emg2qwerty.lightning.WindowedEMGDataModule
+  window_length: 8000
+  padding: [1800, 200]
