@@ -1,0 +1,45 @@
+# @package _global_
+# Simulates 1 kHz sampling: take every 2nd sample (2000/2 = 1000 Hz)
+to_tensor:
+  _target_: emg2qwerty.transforms.ToTensor
+  fields: [emg_left, emg_right]
+
+temporal_downsample_2:
+  _target_: emg2qwerty.transforms.TemporalDownsample
+  factor: 2  # 2 kHz -> 1 kHz
+
+band_rotation:
+  _target_: emg2qwerty.transforms.ForEach
+  transform:
+    _target_: emg2qwerty.transforms.RandomBandRotation
+    offsets: [-1, 0, 1]
+
+temporal_jitter:
+  _target_: emg2qwerty.transforms.TemporalAlignmentJitter
+  max_offset: 120
+
+logspec:
+  _target_: emg2qwerty.transforms.LogSpectrogram
+  n_fft: 64
+  hop_length: 16
+
+specaug:
+  _target_: emg2qwerty.transforms.SpecAugment
+  n_time_masks: 3
+  time_mask_param: 25
+  n_freq_masks: 2
+  freq_mask_param: 4
+
+transforms:
+  train:
+    - ${to_tensor}
+    - ${temporal_downsample_2}
+    - ${band_rotation}
+    - ${temporal_jitter}
+    - ${logspec}
+    - ${specaug}
+  val:
+    - ${to_tensor}
+    - ${temporal_downsample_2}
+    - ${logspec}
+  test: ${transforms.val}
