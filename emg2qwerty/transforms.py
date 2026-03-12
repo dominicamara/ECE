@@ -51,7 +51,19 @@ class ChannelSubset:
 
     def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
         return tensor[..., self.indices]
-        
+
+@dataclass
+class TemporalDownsample:
+    """Downsamples the time dimension by taking every factor-th sample.
+    Simulates a lower sampling rate: effective rate = original_rate / factor.
+    Input tensor shape (T, ...); output shape (T // factor, ...).
+    """
+
+    factor: int
+
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
+        return tensor[:: self.factor, ...]
+           
 @dataclass
 class Lambda:
     """Applies a custom lambda function as a transform.
